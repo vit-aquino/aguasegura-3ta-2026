@@ -1,0 +1,600 @@
+<title>Água Segura</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* Conceito: página única que segue a monografia (problema, solução, limites, custos, equipe).
+   O painel de leituras vem logo após a abertura. Água em azul-petróleo, três status com texto e cor. */
+:root {
+  --bg: #f2f8fa; --surface: #ffffff; --fg: #0b2a35; --muted: #48636d; --line: #d3e3e9;
+  --brand: #073b4c; --accent: #0f7fa6; --on-accent: #ffffff;
+  --hero-bg: #073b4c; --hero-fg: #eaf6fa; --hero-soft: #a9cfdb; --hero-accent: #7fd6ee;
+  --ok: #12a67c; --ok-bg: #dff5ec; --ok-ink: #07694f;
+  --warn: #f2b52e; --warn-bg: #fff1cc; --warn-ink: #7a5200;
+  --bad: #e0486a; --bad-bg: #fde3e9; --bad-ink: #a3173a;
+  --head: "Sora", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #06222c; --surface: #0b3140; --fg: #e4f1f5; --muted: #9db8c1; --line: #1c4857;
+    --accent: #6fd0ea; --on-accent: #04202a; --hero-bg: #041a22; --hero-soft: #8fb6c3;
+    --ok-bg: #0f3d33; --ok-ink: #6fe0b9; --warn-bg: #3d3210; --warn-ink: #f5cf6a; --bad-bg: #4a1626; --bad-ink: #ff9db5;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #06222c; --surface: #0b3140; --fg: #e4f1f5; --muted: #9db8c1; --line: #1c4857;
+  --accent: #6fd0ea; --on-accent: #04202a; --hero-bg: #041a22; --hero-soft: #8fb6c3;
+  --ok-bg: #0f3d33; --ok-ink: #6fe0b9; --warn-bg: #3d3210; --warn-ink: #f5cf6a; --bad-bg: #4a1626; --bad-ink: #ff9db5;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.6; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--hero-bg); }
+h1, h2, h3 { font-family: var(--head); line-height: 1.15; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: var(--accent); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 1080px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.eyebrow { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; color: var(--accent); }
+section { scroll-margin-top: 72px; }
+.sec { padding-block: 72px; }
+.sec h2 { font-size: clamp(1.7rem, 4vw, 2.4rem); max-width: 22ch; margin-top: 10px; }
+.lead { color: var(--muted); max-width: 62ch; margin-top: 16px; }
+
+/* Cabeçalho */
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--hero-bg); color: var(--hero-fg); border-bottom: 1px solid rgba(255,255,255,0.12); }
+.top .wrap { display: flex; align-items: center; gap: 24px; min-height: 58px; }
+.logo { display: flex; align-items: center; gap: 10px; font-family: var(--head); font-weight: 700; letter-spacing: 0.06em; font-size: 0.95rem; color: var(--hero-fg); text-decoration: none; white-space: nowrap; }
+.logo svg { width: 22px; height: 22px; }
+.top nav { min-width: 0; overflow-x: auto; scrollbar-width: none; margin-left: auto; }
+.top nav::-webkit-scrollbar { display: none; }
+.top nav ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.top nav a { display: block; padding: 8px 12px; color: var(--hero-soft); text-decoration: none; font-size: 0.9rem; border-radius: 8px; white-space: nowrap; }
+.top nav a:hover { color: var(--hero-fg); background: rgba(255,255,255,0.08); }
+
+/* Abertura */
+.hero { background: var(--hero-bg); color: var(--hero-fg); padding-block: 64px 0; overflow: hidden; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 32px; align-items: center; }
+.hero .eyebrow { color: var(--hero-accent); }
+.hero h1 { font-size: clamp(2.4rem, 6.5vw, 4.2rem); margin-top: 14px; font-weight: 700; }
+.hero p.sub { margin-top: 18px; color: var(--hero-soft); max-width: 50ch; font-size: 1.08rem; }
+.hero .meta { margin-top: 10px; font-size: 0.9rem; color: var(--hero-soft); }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 20px; border-radius: 10px; font: 600 0.95rem var(--body); text-decoration: none; cursor: pointer; border: 1.5px solid transparent; }
+.btn.primary { background: var(--hero-accent); color: #042531; }
+.btn.ghost { border-color: rgba(255,255,255,0.35); color: var(--hero-fg); background: transparent; }
+.btn.ghost:hover { background: rgba(255,255,255,0.08); }
+.hero-art { width: 100%; max-width: 380px; justify-self: center; }
+.waves { display: block; width: 100%; height: 56px; margin-top: 40px; }
+
+/* Painel */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px; margin-top: 32px; }
+.panel-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; justify-content: space-between; }
+.seal { display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 600; padding: 5px 12px; border-radius: 999px; background: var(--warn-bg); color: var(--warn-ink); }
+.seal::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.scen { display: flex; flex-wrap: wrap; gap: 8px; }
+.scen button { min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1.5px solid var(--line); background: transparent; color: var(--fg); font: 600 0.92rem var(--body); cursor: pointer; }
+.scen button[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #eaf6fa; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .scen button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); } }
+:root[data-theme="dark"] .scen button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.verdict { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 22px; padding: 16px 18px; border-radius: 12px; }
+.verdict strong { font-family: var(--head); font-size: 1.35rem; }
+.verdict span { font-size: 0.92rem; }
+.verdict.ok { background: var(--ok-bg); color: var(--ok-ink); }
+.verdict.warn { background: var(--warn-bg); color: var(--warn-ink); }
+.verdict.bad { background: var(--bad-bg); color: var(--bad-ink); }
+.params { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 20px; }
+.param { border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+.param header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.param h3 { font-size: 1rem; font-weight: 600; }
+.pill { font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+.pill.ok { background: var(--ok-bg); color: var(--ok-ink); }
+.pill.warn { background: var(--warn-bg); color: var(--warn-ink); }
+.pill.bad { background: var(--bad-bg); color: var(--bad-ink); }
+.val { margin-top: 10px; display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
+.val .num { font-family: var(--head); font-size: 2.6rem; font-weight: 600; line-height: 1; }
+.val .unit { color: var(--muted); font-size: 0.95rem; }
+.track { position: relative; height: 10px; border-radius: 999px; overflow: hidden; margin-top: 16px; background: var(--line); }
+.track i { position: absolute; top: 0; bottom: 0; }
+.track i.ok { background: var(--ok); } .track i.warn { background: var(--warn); } .track i.bad { background: var(--bad); }
+.mark { position: absolute; top: -4px; width: 4px; height: 18px; margin-left: -2px; background: var(--fg); border-radius: 2px; box-shadow: 0 0 0 2px var(--surface); transition: left 0.35s ease; }
+.track-wrap { position: relative; }
+.track-wrap .mark { top: -4px; }
+.scale { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.what { margin-top: 10px; font-size: 0.88rem; color: var(--muted); }
+.panel-note { margin-top: 18px; font-size: 0.88rem; color: var(--muted); }
+
+/* Problema */
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; margin-top: 32px; align-items: start; }
+.question { border-left: 4px solid var(--accent); padding: 4px 0 4px 20px; font-family: var(--head); font-size: 1.2rem; line-height: 1.4; }
+.question small { display: block; margin-top: 12px; font: 500 0.78rem var(--body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.stack { display: grid; gap: 14px; }
+.stack p { color: var(--muted); }
+
+/* Solução */
+.blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 32px; }
+.block { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; min-width: 0; }
+.block svg { width: 34px; height: 34px; color: var(--accent); }
+.block h3 { margin-top: 14px; font-size: 1.1rem; }
+.block p { margin-top: 8px; font-size: 0.93rem; color: var(--muted); }
+
+/* Fluxo */
+.flow { list-style: none; margin: 36px 0 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; counter-reset: s; }
+.flow li { position: relative; padding: 0 6px; text-align: center; }
+.flow li::before { content: ""; position: absolute; top: 19px; left: 0; right: 0; height: 2px; background: var(--line); }
+.flow li:first-child::before { left: 50%; } .flow li:last-child::before { right: 50%; }
+.flow .dot { position: relative; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px; margin: 0 auto; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); color: var(--accent); }
+.flow .dot svg { width: 20px; height: 20px; }
+.flow b { display: block; margin-top: 12px; font-size: 0.92rem; }
+.flow span.d { display: block; margin-top: 2px; font-size: 0.8rem; color: var(--muted); }
+.flow-note { margin-top: 24px; padding: 14px 18px; border-radius: 12px; background: var(--surface); border: 1px dashed var(--line); font-size: 0.92rem; color: var(--muted); }
+
+/* Parâmetros */
+.plist { display: grid; gap: 10px; margin-top: 32px; }
+details.pp { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+details.pp summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; font-family: var(--head); font-weight: 600; }
+details.pp summary::-webkit-details-marker { display: none; }
+details.pp summary small { font: 400 0.85rem var(--body); color: var(--muted); }
+details.pp summary::after { content: "+"; font-size: 1.4rem; color: var(--accent); }
+details.pp[open] summary::after { content: "\2212"; }
+.pp-body { padding: 0 20px 18px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.pp-body h4 { margin: 0 0 4px; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.pp-body p { font-size: 0.93rem; color: var(--muted); }
+
+/* Limites */
+.limits { background: var(--brand); color: #eaf6fa; }
+.limits .eyebrow { color: var(--hero-accent); }
+.limits .lead { color: #bcd9e3; }
+.lim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 32px; }
+.lim { border: 1px solid rgba(255,255,255,0.22); border-radius: 14px; padding: 20px; background: rgba(255,255,255,0.05); }
+.lim h3 { font-size: 1.05rem; color: #ffe29a; }
+.lim p { margin-top: 8px; font-size: 0.93rem; color: #d3e8ef; }
+.big-quote { margin-top: 32px; padding: 20px 24px; border-radius: 14px; background: #ffe29a; color: #3a2a00; font-family: var(--head); font-size: 1.15rem; line-height: 1.4; }
+
+/* Degraus */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 32px; align-items: end; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; min-width: 0; }
+.step:nth-child(1) { min-height: 190px; } .step:nth-child(2) { min-height: 230px; } .step:nth-child(3) { min-height: 270px; }
+.step .n { font: 600 0.75rem var(--body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.step h3 { margin-top: 8px; font-size: 1.1rem; }
+.step p { margin-top: 8px; font-size: 0.93rem; color: var(--muted); }
+
+/* Custos */
+.table-scroll { overflow-x: auto; margin-top: 28px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 420px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 12px 18px; border-bottom: 1px solid var(--line); font-size: 0.95rem; }
+th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+td.r, th.r { text-align: right; }
+tfoot td { border-bottom: 0; font-weight: 700; background: var(--bg); }
+.cost-note { margin-top: 14px; font-size: 0.88rem; color: var(--muted); max-width: 70ch; }
+.extras { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+.extras span { font-size: 0.85rem; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
+.via { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 28px; }
+.via div { border-top: 3px solid var(--accent); padding-top: 14px; }
+.via h3 { font-size: 1.05rem; }
+.via p { margin-top: 6px; font-size: 0.93rem; color: var(--muted); }
+
+/* QR */
+.qr-box { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 32px; align-items: center; margin-top: 32px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; }
+#qr { background: #fff; padding: 12px; border-radius: 12px; width: 184px; height: 184px; display: grid; place-items: center; }
+#qr img, #qr canvas { max-width: 100%; height: auto; display: block; }
+.qr-info p { color: var(--muted); font-size: 0.95rem; }
+.addr { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.addr input { flex: 1 1 220px; min-width: 0; min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--bg); color: var(--fg); font: 0.92rem var(--body); }
+.addr .btn { background: var(--accent); color: var(--on-accent); }
+#copied { margin-top: 8px; min-height: 1.4em; font-size: 0.88rem; color: var(--ok-ink); }
+
+/* ODS */
+.ods { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-top: 32px; }
+.od { display: flex; gap: 14px; align-items: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 0; }
+.od .tag { flex: none; width: 52px; height: 52px; border-radius: 10px; display: grid; place-items: center; text-align: center; font: 700 0.62rem/1.1 var(--head); color: #fff; }
+.od .tag b { display: block; font-size: 1.25rem; }
+.od h3 { font: 600 0.98rem var(--head); }
+.od p { margin-top: 4px; font-size: 0.86rem; color: var(--muted); }
+
+/* Equipe */
+.fronts { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 32px; }
+.front { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; }
+.front h3 { font-size: 0.98rem; }
+.front p { margin-top: 4px; font-size: 0.85rem; color: var(--muted); }
+.timeline { list-style: none; margin: 36px 0 0; padding: 0 0 0 22px; border-left: 2px solid var(--line); display: grid; gap: 22px; max-width: 70ch; }
+.timeline li { position: relative; }
+.timeline li::before { content: ""; position: absolute; left: -29px; top: 7px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--bg); }
+.timeline b { font-family: var(--head); }
+.timeline p { margin-top: 4px; color: var(--muted); font-size: 0.95rem; }
+
+/* Rodapé */
+footer { background: var(--hero-bg); color: var(--hero-soft); padding-block: 48px; font-size: 0.9rem; }
+footer .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px; }
+footer h2 { font-size: 1rem; color: var(--hero-fg); }
+footer ul { margin: 12px 0 0; padding-left: 18px; display: grid; gap: 8px; }
+footer .warn { margin-top: 32px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); color: #ffe29a; }
+
+@media (max-width: 860px) {
+  .hero .wrap, .two { grid-template-columns: minmax(0, 1fr); }
+  .hero-art { max-width: 240px; }
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .step:nth-child(n) { min-height: 0; }
+  .qr-box { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+  .flow { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .flow li { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 16px; text-align: left; padding: 0 0 20px; }
+  .flow li::before { top: 0; bottom: 0; left: 19px; right: auto; width: 2px; height: auto; }
+  .flow li:first-child::before { top: 20px; left: 19px; } .flow li:last-child::before { bottom: auto; height: 20px; right: auto; left: 19px; }
+  .flow .dot { margin: 0; grid-row: 1 / span 2; }
+  .flow b { margin-top: 8px; }
+  .pp-body { grid-template-columns: minmax(0, 1fr); }
+  .sec { padding-block: 56px; }
+  .top .wrap { gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .mark { transition: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3c3.4 4.2 6 7.3 6 10.6A6 6 0 0 1 6 13.6C6 10.3 8.6 7.2 12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-sensor" viewBox="0 0 24 24"><path d="M9 3h6v9l2 3v6H7v-6l2-3V3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 16h10" stroke="currentColor" stroke-width="1.7"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M3 9a13 13 0 0 1 18 0M6 12.5a8.5 8.5 0 0 1 12 0M9 16a4 4 0 0 1 6 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="19" r="1.3" fill="currentColor"/></symbol>
+    <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+    <symbol id="i-page" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 9h18M7 14h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#topo" aria-label="Água Segura, início"><svg aria-hidden="true"><use href="#i-drop"/></svg>ÁGUA SEGURA</a>
+    <nav aria-label="Seções">
+      <ul>
+        <li><a href="#painel">Painel</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#parametros">Parâmetros</a></li>
+        <li><a href="#limites">Limites</a></li>
+        <li><a href="#custos">Custos</a></li>
+        <li><a href="#ods">ODS</a></li>
+        <li><a href="#equipe">Equipe</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="topo">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Projeto de inovação · 3TA · 2026</p>
+        <h1>Tecnologia a serviço da água.</h1>
+        <p class="sub">Um sistema experimental que mede pH, turbidez, temperatura e TDS com sensores, envia as leituras por Wi-Fi e mostra tudo em uma página que se abre pelo QR Code.</p>
+        <p class="meta">E.E. Professor Francisco Lopes de Azevedo · São José dos Campos, SP</p>
+        <div class="cta">
+          <a class="btn primary" href="#painel">Ver o painel</a>
+          <a class="btn ghost" href="#como-funciona">Como funciona</a>
+        </div>
+      </div>
+      <svg class="hero-art" viewBox="0 0 320 320" role="img" aria-label="Gota de água com ondas concêntricas">
+        <g fill="none" stroke="#7fd6ee" stroke-width="2">
+          <circle cx="160" cy="190" r="40" opacity="0.9"/>
+          <circle cx="160" cy="190" r="72" opacity="0.6"/>
+          <circle cx="160" cy="190" r="104" opacity="0.35"/>
+          <circle cx="160" cy="190" r="136" opacity="0.18"/>
+        </g>
+        <path d="M160 70c28 34 50 60 50 88a50 50 0 0 1-100 0c0-28 22-54 50-88Z" fill="#7fd6ee"/>
+        <path d="M138 160c0 14 8 26 22 30" fill="none" stroke="#073b4c" stroke-width="5" stroke-linecap="round" opacity="0.45"/>
+      </svg>
+    </div>
+    <svg class="waves" viewBox="0 0 1200 56" preserveAspectRatio="none" aria-hidden="true"><path d="M0 28c100 0 100 24 200 24s100-24 200-24 100 24 200 24 100-24 200-24 100 24 200 24 100-24 200-24v28H0Z" fill="var(--bg)"/></svg>
+  </section>
+
+  <section id="painel" class="sec" style="padding-top:24px">
+    <div class="wrap">
+      <p class="eyebrow">Monitoramento demonstrativo</p>
+      <h2>As quatro leituras do projeto, em um só lugar.</h2>
+      <p class="lead">Escolha uma situação para ver como a página mostra cada parâmetro e a classificação geral. Os valores são simulados, ainda não vêm do ESP32.</p>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="scen" role="group" aria-label="Situação simulada">
+            <button type="button" data-s="0" aria-pressed="true">Tudo normal</button>
+            <button type="button" data-s="1" aria-pressed="false">Atenção</button>
+            <button type="button" data-s="2" aria-pressed="false">Alerta</button>
+          </div>
+          <span class="seal">Dados simulados</span>
+        </div>
+        <div id="verdict" class="verdict ok" aria-live="polite"></div>
+        <div id="params" class="params"></div>
+        <p class="panel-note">As faixas coloridas são exemplos para o protótipo. Os critérios reais de cada status ainda serão definidos e dependem da calibração dos sensores.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="problema" class="sec" style="padding-top:24px">
+    <div class="wrap">
+      <p class="eyebrow">O problema</p>
+      <h2>A água é acompanhada, mas nem sempre o resultado chega a quem usa.</h2>
+      <div class="two">
+        <div class="stack">
+          <p>Escolas e hospitais usam água todos os dias. Existem normas e análises para verificar a qualidade, mas os resultados nem sempre são apresentados de forma simples para quem consome.</p>
+          <p>O Água Segura parte da hipótese de que um QR Code junto ao ponto monitorado facilita a consulta, e de que um histórico de leituras ajuda na manutenção preventiva. Essas hipóteses ainda precisam ser testadas.</p>
+        </div>
+        <blockquote class="question" style="margin:0">
+          Como um sistema inteligente, com sensores, ESP32, Wi-Fi e QR Code, pode contribuir para o monitoramento experimental e para a transparência das informações sobre a qualidade da água em instituições?
+          <small>Pergunta orientadora do trabalho</small>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section id="solucao" class="sec" style="padding-top:24px">
+    <div class="wrap">
+      <p class="eyebrow">A solução</p>
+      <h2>Quatro peças que trabalham juntas.</h2>
+      <div class="blocks">
+        <article class="block"><svg aria-hidden="true"><use href="#i-sensor"/></svg><h3>Sensores</h3><p>pH, turbidez, temperatura e condutividade/TDS, instalados em um reservatório experimental.</p></article>
+        <article class="block"><svg aria-hidden="true"><use href="#i-chip"/></svg><h3>ESP32</h3><p>Microcontrolador que recebe os sinais dos sensores e processa as leituras.</p></article>
+        <article class="block"><svg aria-hidden="true"><use href="#i-wifi"/></svg><h3>Wi-Fi</h3><p>Envio dos dados para um banco de dados, servidor ou página digital.</p></article>
+        <article class="block"><svg aria-hidden="true"><use href="#i-qr"/></svg><h3>Página e QR Code</h3><p>Uma página com a última leitura e o histórico, aberta ao escanear o código junto ao ponto monitorado.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="como-funciona" class="sec" style="padding-top:24px">
+    <div class="wrap">
+      <p class="eyebrow">Como funciona</p>
+      <h2>Do reservatório ao celular, em sete passos.</h2>
+      <ol class="flow">
+        <li><span class="dot"><svg aria-hidden="true"><use href="#i-drop"/></svg></span><b>Água</b><span class="d">Reservatório experimental</span></li>
+        <li><span class="dot"><svg aria-hidden="true"><use href="#i-sensor"/></svg></span><b>Sensores</b><span class="d">Medem os 4 parâmetros</span></li>
+        <li><span class="dot"><svg aria-hidden="true"><use href="#i-chip"/></svg></span><b>ESP32</b><span class="d">Processa os sinais</span></li>
+        <li><span class="dot"><svg aria-hidden="true"><use href="#i-wifi"/></svg></span><b>Wi-Fi</b><span class="d">Transmite os dados</span></li>
+        <li><span class="dot"><svg aria-hidden="true"><use href="#i-db"/></svg></span><b>Banco de dados</b><span class="d">Guarda o histórico</span></li>
+        <li><span class="dot"><svg aria-hidden="true"><use href="#i-page"/></svg></span><b>Página</b><span class="d">Mostra as leituras</span></li>
+        <li><span class="dot"><svg aria-hidden="true"><use href="#i-qr"/></svg></span><b>QR Code</b><span class="d">Atalho no local</span></li>
+      </ol>
+      <p class="flow-note">Situação atual: esta página ainda não está conectada ao ESP32. O painel usa valores simulados.</p>
+    </div>
+  </section>
+
+  <section id="parametros" class="sec" style="padding-top:24px">
+    <div class="wrap">
+      <p class="eyebrow">O que cada parâmetro mede</p>
+      <h2>Cada leitura conta só uma parte da história.</h2>
+      <p class="lead">Abra cada item para ver o que o sensor mede e onde está o limite da leitura.</p>
+      <div class="plist">
+        <details class="pp" open>
+          <summary><span>pH <small>sensor PH4502C com sonda</small></span></summary>
+          <div class="pp-body"><div><h4>O que mede</h4><p>Características de acidez ou alcalinidade da água.</p></div><div><h4>Limite da leitura</h4><p>Depende de calibração com soluções próprias e das condições da medição.</p></div></div>
+        </details>
+        <details class="pp">
+          <summary><span>Turbidez <small>sensor de turbidez</small></span></summary>
+          <div class="pp-body"><div><h4>O que mede</h4><p>Presença de partículas em suspensão, que reduzem a transparência da água.</p></div><div><h4>Limite da leitura</h4><p>Mostra a transparência, não diz de que são feitas as partículas.</p></div></div>
+        </details>
+        <details class="pp">
+          <summary><span>Temperatura <small>sensor DS18B20 à prova d'água</small></span></summary>
+          <div class="pp-body"><div><h4>O que mede</h4><p>A condição térmica da amostra de água.</p></div><div><h4>Limite da leitura</h4><p>Sozinha, não indica se a água é adequada para consumo.</p></div></div>
+        </details>
+        <details class="pp">
+          <summary><span>Condutividade / TDS <small>sensor TDS/condutividade</small></span></summary>
+          <div class="pp-body"><div><h4>O que mede</h4><p>Uma indicação da presença de íons ou sólidos dissolvidos.</p></div><div><h4>Limite da leitura</h4><p>É uma estimativa e não identifica quais substâncias estão dissolvidas.</p></div></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="limites" class="sec limits">
+    <div class="wrap">
+      <p class="eyebrow">Limites e transparência</p>
+      <h2>O que este protótipo não faz.</h2>
+      <p class="lead">Dizer o limite do sistema faz parte do projeto. A informação só ajuda se for lida do jeito certo.</p>
+      <div class="lim-grid">
+        <div class="lim"><h3>Não é laudo</h3><p>Os quatro parâmetros não bastam, sozinhos, para dizer se a água é potável.</p></div>
+        <div class="lim"><h3>Sensores de baixo custo</h3><p>Podem ter erros e precisam de calibração e validação antes de qualquer uso real.</p></div>
+        <div class="lim"><h3>Uso real exige avaliação</h3><p>Em escola ou hospital, dependeria de avaliação técnica, sanitária e de segurança.</p></div>
+      </div>
+      <p class="big-quote">O protótipo não substitui análises laboratoriais oficiais e não pode, isoladamente, atestar a potabilidade da água.</p>
+    </div>
+  </section>
+
+  <section id="etapas" class="sec">
+    <div class="wrap">
+      <p class="eyebrow">Do protótipo ao uso</p>
+      <h2>Três níveis de construção, um de cada vez.</h2>
+      <div class="steps">
+        <article class="step"><p class="n">Nível 1</p><h3>Base experimental</h3><p>ESP32, sensores e reservatório. Cada sensor é testado sozinho antes da integração.</p></article>
+        <article class="step"><p class="n">Nível 2</p><h3>Dados na página</h3><p>Transmissão das leituras por Wi-Fi para uma página ou aplicativo.</p></article>
+        <article class="step"><p class="n">Nível 3</p><h3>Acesso e histórico</h3><p>QR Code, histórico de medições, alertas e painel de acompanhamento.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="custos" class="sec" style="padding-top:24px">
+    <div class="wrap">
+      <p class="eyebrow">Custos e viabilidade</p>
+      <h2>Cerca de R$ 427 para o primeiro conjunto.</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Componente</th><th class="r">Qtd.</th><th class="r">Preço de referência</th></tr></thead>
+          <tbody>
+            <tr><td>ESP32 DevKit</td><td class="r">1</td><td class="r">R$ 40,85</td></tr>
+            <tr><td>Sensor de pH PH4502C + sonda</td><td class="r">1</td><td class="r">R$ 166,01</td></tr>
+            <tr><td>Sensor de turbidez</td><td class="r">1</td><td class="r">R$ 88,73</td></tr>
+            <tr><td>Sensor TDS/condutividade</td><td class="r">1</td><td class="r">R$ 42,37</td></tr>
+            <tr><td>Sensor DS18B20 à prova d'água</td><td class="r">1</td><td class="r">R$ 10,36</td></tr>
+            <tr><td>Protoboard 830 pontos</td><td class="r">1</td><td class="r">R$ 11,30</td></tr>
+            <tr><td>Kit de cabos Dupont/Jumper</td><td class="r">1</td><td class="r">R$ 28,40</td></tr>
+            <tr><td>Caixa para projeto eletrônico</td><td class="r">1</td><td class="r">R$ 38,90</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="2">Total de referência</td><td class="r">R$ 426,92</td></tr></tfoot>
+        </table>
+      </div>
+      <p class="cost-note">Valor aproximado, sem frete e sem materiais complementares. Os preços variam conforme o fornecedor e a época da compra.</p>
+      <div class="extras" aria-label="Materiais complementares previstos">
+        <span>Fonte USB para o ESP32</span><span>Cabos e conectores extras</span><span>Reservatório transparente pequeno</span><span>Mangueiras e conexões</span><span>Soluções de calibração</span><span>Suporte para os componentes</span><span>QR Code impresso</span>
+      </div>
+      <div class="via">
+        <div><h3>Viabilidade técnica</h3><p>Depende da estabilidade das leituras, da calibração dos sensores, da integração e da transmissão dos dados.</p></div>
+        <div><h3>Viabilidade econômica</h3><p>Considera o custo inicial, os materiais complementares, a manutenção e a troca de peças.</p></div>
+        <div><h3>Viabilidade social</h3><p>Observa se a consulta é fácil, se os avisos são compreendidos e qual a contribuição educativa.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="celular" class="sec" style="padding-top:24px">
+    <div class="wrap">
+      <p class="eyebrow">Acesso pelo celular</p>
+      <h2>Escaneie para abrir esta página.</h2>
+      <div class="qr-box">
+        <div id="qr" aria-label="QR Code da página"></div>
+        <div class="qr-info">
+          <p>No projeto, um QR Code ficaria perto do ponto monitorado e levaria à página daquele ponto. Aponte a câmera do celular para o código ao lado.</p>
+          <div class="addr">
+            <input id="addr" type="text" aria-label="Endereço da página" value="https://aguasegura-3ta-2026.netlify.app/">
+            <button class="btn" id="copy" type="button">Copiar endereço</button>
+          </div>
+          <p id="copied" role="status"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ods" class="sec" style="padding-top:24px">
+    <div class="wrap">
+      <p class="eyebrow">Conexão com os ODS</p>
+      <h2>Seis objetivos da Agenda 2030 dialogam com o projeto.</h2>
+      <div class="ods">
+        <article class="od"><div class="tag" style="background:#4C9F38"><span><b>3</b>ODS</span></div><div><h3>Saúde e Bem-Estar</h3><p>Informação acessível sobre a água usada por todos.</p></div></article>
+        <article class="od"><div class="tag" style="background:#1FA9CF"><span><b>6</b>ODS</span></div><div><h3>Água Potável e Saneamento</h3><p>Acompanhamento de parâmetros da água em instituições.</p></div></article>
+        <article class="od"><div class="tag" style="background:#E5581A"><span><b>9</b>ODS</span></div><div><h3>Indústria, Inovação e Infraestrutura</h3><p>Sensores, ESP32 e Internet das Coisas em um protótipo escolar.</p></div></article>
+        <article class="od"><div class="tag" style="background:#B8620A"><span><b>11</b>ODS</span></div><div><h3>Cidades e Comunidades Sustentáveis</h3><p>Transparência para a comunidade escolar.</p></div></article>
+        <article class="od"><div class="tag" style="background:#9A6F1C"><span><b>12</b>ODS</span></div><div><h3>Consumo e Produção Responsáveis</h3><p>Educação para o consumo responsável da água.</p></div></article>
+        <article class="od"><div class="tag" style="background:#19486A"><span><b>17</b>ODS</span></div><div><h3>Parcerias e Meios de Implementação</h3><p>Colaboração entre estudantes e comunidade.</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="equipe" class="sec" style="padding-top:24px">
+    <div class="wrap">
+      <p class="eyebrow">Equipe e processo</p>
+      <h2>Uma turma inteira, dividida em sete frentes.</h2>
+      <p class="lead">A turma 3TA, do Curso Técnico em Administração, organizou o trabalho por frentes. O projeto une Administração, tecnologia, pesquisa e sustentabilidade.</p>
+      <div class="fronts">
+        <div class="front"><h3>Eletrônica</h3><p>Sensores, ESP32 e montagem.</p></div>
+        <div class="front"><h3>Programação</h3><p>Código, processamento e comunicação dos dados.</p></div>
+        <div class="front"><h3>Aplicativo</h3><p>Interface e apresentação das informações.</p></div>
+        <div class="front"><h3>Banco de dados</h3><p>Histórico das medições.</p></div>
+        <div class="front"><h3>QR Code</h3><p>Identificação dos pontos de monitoramento.</p></div>
+        <div class="front"><h3>Administração</h3><p>Custos, fornecedores, Canvas, modelo de negócio e viabilidade.</p></div>
+        <div class="front"><h3>Pesquisa científica</h3><p>Legislação, metodologia, testes e análise dos resultados.</p></div>
+      </div>
+      <ol class="timeline">
+        <li><b>Pesquisa e planejamento</b><p>Estudo sobre qualidade da água, potabilidade, sensores, Internet das Coisas e a Portaria GM/MS nº 888/2021.</p></li>
+        <li><b>Visita ao CIEBP</b><p>Visita ao Centro de Inovação da Educação Básica Paulista, com observação de tecnologias e conversa sobre cultura digital e desenvolvimento de projetos.</p></li>
+        <li><b>Construção e testes</b><p>Montagem progressiva do protótipo, com testes simulados dos sensores, da transmissão e dos alertas.</p></li>
+        <li><b>Ação de conscientização</b><p>Apresentação do protótipo à comunidade escolar e conversa sobre a importância da qualidade da água.</p></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <p class="logo" style="margin-bottom:12px"><svg aria-hidden="true"><use href="#i-drop"/></svg>ÁGUA SEGURA</p>
+        <p>Sistema inteligente de monitoramento experimental da qualidade da água.</p>
+        <p style="margin-top:8px">E.E. Professor Francisco Lopes de Azevedo<br>Diretoria de Ensino de São José dos Campos · Turma 3TA · 2026</p>
+      </div>
+      <div>
+        <h2>Referências</h2>
+        <ul>
+          <li>BRASIL. Ministério da Saúde. Portaria GM/MS nº 888, de 4 de maio de 2021.</li>
+          <li>ONU. Transformando nosso mundo: a Agenda 2030 para o Desenvolvimento Sustentável. 2015.</li>
+          <li>OMS. Guidelines for drinking-water quality, 4ª ed. 2022.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="warn">Protótipo experimental e educativo. Não tem valor de laudo e não substitui análises laboratoriais oficiais.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var P = [
+    { k: 'ph', n: 'pH', u: '', d: 1, min: 0, max: 14, what: 'Acidez ou alcalinidade da água.',
+      z: [[0,5.5,'bad'],[5.5,6.5,'warn'],[6.5,8.5,'ok'],[8.5,9.5,'warn'],[9.5,14,'bad']] },
+    { k: 'tb', n: 'Turbidez', u: 'NTU', d: 1, min: 0, max: 10, what: 'Partículas em suspensão que reduzem a transparência.',
+      z: [[0,3,'ok'],[3,5,'warn'],[5,10,'bad']] },
+    { k: 'tp', n: 'Temperatura', u: '°C', d: 1, min: 10, max: 40, what: 'Condição térmica da amostra.',
+      z: [[10,28,'ok'],[28,32,'warn'],[32,40,'bad']] },
+    { k: 'td', n: 'TDS', u: 'ppm', d: 0, min: 0, max: 1000, what: 'Indicação de sólidos e íons dissolvidos.',
+      z: [[0,300,'ok'],[300,500,'warn'],[500,1000,'bad']] }
+  ];
+  var S = [
+    { ph: 7.2, tb: 1.5, tp: 24.0, td: 120 },
+    { ph: 8.8, tb: 4.1, tp: 26.5, td: 380 },
+    { ph: 5.1, tb: 8.9, tp: 31.0, td: 720 }
+  ];
+  var LABEL = { ok: 'Normal', warn: 'Atenção', bad: 'Alerta' };
+  var RANK = { ok: 0, warn: 1, bad: 2 };
+  var box = document.getElementById('params');
+  var verdict = document.getElementById('verdict');
+
+  function statusOf(p, v) {
+    for (var i = 0; i < p.z.length; i++) if (v >= p.z[i][0] && v <= p.z[i][1]) return p.z[i][2];
+    return 'bad';
+  }
+  function fmt(v, d) { return v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+
+  function render(idx) {
+    var data = S[idx], worst = 'ok', html = '';
+    P.forEach(function (p) {
+      var v = data[p.k], st = statusOf(p, v), span = p.max - p.min;
+      if (RANK[st] > RANK[worst]) worst = st;
+      var zones = p.z.map(function (z) {
+        return '<i class="' + z[2] + '" style="left:' + ((z[0] - p.min) / span * 100) + '%;width:' + ((z[1] - z[0]) / span * 100) + '%"></i>';
+      }).join('');
+      var pos = Math.max(0, Math.min(100, (v - p.min) / span * 100));
+      html += '<article class="param"><header><h3>' + p.n + '</h3><span class="pill ' + st + '">' + LABEL[st] + '</span></header>' +
+        '<p class="val"><span class="num">' + fmt(v, p.d) + '</span><span class="unit">' + p.u + '</span></p>' +
+        '<div class="track-wrap"><div class="track" aria-hidden="true">' + zones + '</div><b class="mark" style="left:' + pos + '%"></b></div>' +
+        '<div class="scale"><span>' + fmt(p.min, 0) + '</span><span>' + fmt(p.max, 0) + '</span></div>' +
+        '<p class="what">' + p.what + '</p></article>';
+    });
+    box.innerHTML = html;
+    verdict.className = 'verdict ' + worst;
+    verdict.innerHTML = '<strong>' + LABEL[worst] + '</strong><span>Classificação experimental do protótipo, baseada só nestes quatro parâmetros. Não é laudo de potabilidade.</span>';
+  }
+
+  var btns = document.querySelectorAll('.scen button');
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      btns.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      render(+b.getAttribute('data-s'));
+    });
+  });
+  render(0);
+
+  /* QR Code */
+  var qrEl = document.getElementById('qr'), addr = document.getElementById('addr'), qr = null;
+  function drawQR() {
+    qrEl.innerHTML = '';
+    try {
+      qr = new QRCode(qrEl, { text: addr.value || ' ', width: 160, height: 160, colorDark: '#073b4c', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+    } catch (e) { qrEl.textContent = 'QR Code indisponível'; }
+  }
+  drawQR();
+  addr.addEventListener('change', drawQR);
+
+  var copied = document.getElementById('copied');
+  document.getElementById('copy').addEventListener('click', function () {
+    function ok() { copied.textContent = 'Endereço copiado.'; }
+    function fallback() { addr.focus(); addr.select(); copied.textContent = 'Selecione e copie o endereço acima.'; }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(addr.value).then(ok, fallback);
+      else fallback();
+    } catch (e) { fallback(); }
+  });
+})();
+</script>
